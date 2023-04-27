@@ -21,15 +21,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToCurrency() {
-    // Navigate to Currency module
+    // Navigate to Currency 
+  Navigator.pushNamed(context, "currencyDenomination");
   }
 
   void _navigateToObject() {
-    // Navigate to Object module
+    // Navigate to Object module\
+    
+  Navigator.pushNamed(context, "objectRecogination");
   }
 
   void _navigateToObstacle() {
     // Navigate to Obstacle module
+    
+  Navigator.pushNamed(context, "obstacldeDetection");
   }
 
   @override
@@ -39,6 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Home Screen'),
       ),
       body: GestureDetector(
+        onTap: (){
+           flutterTts.speak("PLease use double finger to swipe");
+        },
         onHorizontalDragUpdate: (details) {
           if (details.delta.dx > 0) {
             flutterTts.speak("Object");
