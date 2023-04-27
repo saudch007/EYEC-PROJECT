@@ -13,7 +13,7 @@ class _obstacleDetectionState extends State<obstacleDetection> {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      child: Text("currencyDenomination"),
+      child: Text("obstacle DEtection"),
     );
   }
 }
