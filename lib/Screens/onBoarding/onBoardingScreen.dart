@@ -30,12 +30,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     int? index,
   }) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      decoration: const BoxDecoration(
+      duration: Duration(milliseconds: 200),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(50),
         ),
-        color: Color(0xFF000000),
+        color: Color(0xFF000000).withOpacity(0.5),
       ),
       margin: const EdgeInsets.only(right: 5),
       height: 10,
@@ -52,8 +52,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       backgroundColor: colors[_currentPage],
-      body: SafeArea(
-        child: Column(
+      body: Stack(children: [
+        Image.asset(
+          contents[0].image,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+        ), // replace with your actual image path
+
+        Column(
           children: [
             Expanded(
               flex: 3,
@@ -189,7 +196,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
-      ),
+      ]),
     );
   }
 }
