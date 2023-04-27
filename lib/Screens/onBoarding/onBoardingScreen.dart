@@ -117,7 +117,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ? Padding(
                           padding: const EdgeInsets.all(30),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+
+                              Navigator.pushNamed(context,'/homeScreen');
+                            },
                             child: const Text("START"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,
