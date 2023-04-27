@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:sample/Screens/onBoarding/size_config.dart';
 
@@ -44,6 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  int val = 0;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -53,13 +56,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       backgroundColor: colors[_currentPage],
       body: Stack(children: [
-        Image.asset(
-          contents[0].image,
+        PageView.builder(
+          physics: const BouncingScrollPhysics(),
+          controller: _controller,
+          onPageChanged: (value) => setState(() => _currentPage = value),
+          itemCount: contents.length,
+          itemBuilder: (context, i) {
+            return Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Column(
+                children: [
+                  Image.asset(
+                    contents[_currentPage].image,
+                  ), //
+                ],
+              ),
+            );
+          },
+        ),
+        Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ), // replace with your actual image path
-
+          color: Colors.black.withOpacity(0.5),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
+            ),
+          ),
+        ),
         Column(
           children: [
             Expanded(
@@ -125,8 +150,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           padding: const EdgeInsets.all(30),
                           child: ElevatedButton(
                             onPressed: () {
-
-                              Navigator.pushNamed(context,'/homeScreen');
+                              Navigator.pushNamed(context, '/homeScreen');
                             },
                             child: const Text("START"),
                             style: ElevatedButton.styleFrom(
