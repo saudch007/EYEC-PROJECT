@@ -18,13 +18,13 @@ List<OnboardingContents> contents = [
   ),
   OnboardingContents(
     title: "Detect object in your radius",
-    image: "",
+    image: "assets/images/image2.png",
     desc:
         "But understanding the contributions our colleagues make to our teams and companies.",
   ),
   OnboardingContents(
     title: "Detect product in your radius / optinal feature ",
-    image: "",
+    image: "assets/images/image3.png",
     desc:
         "Take control of notifications, collaborate live or on your own time.",
   ),
