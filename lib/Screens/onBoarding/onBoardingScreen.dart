@@ -68,6 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Image.asset(
                     // Background image
                     contents[_currentPage].image,
+                    height: SizeConfig.blockV! * 90,
                   ), //
                 ],
               ),
@@ -100,7 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       children: [
                         Image.asset(
-                          "assets/logo.png/",
+                          'assets/images/logo.png',
                           height: SizeConfig.blockV! * 35,
                         ),
                         SizedBox(
