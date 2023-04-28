@@ -6,6 +6,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+//Haseeb
 class _HomeScreenState extends State<HomeScreen> {
   final FlutterTts flutterTts = FlutterTts();
 
@@ -17,24 +18,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _speakInstruction() async {
     await flutterTts.setLanguage("en-US");
-    await flutterTts.speak("Welcome to the home screen. Swipe left for currency, swipe right for object, and swipe down for obstacle.");
+    await flutterTts.speak(
+        "Welcome to the home screen. Swipe left for currency, swipe right for object, and swipe down for obstacle.");
   }
 
   void _navigateToCurrency() {
-    // Navigate to Currency 
-  Navigator.pushNamed(context, "currencyDenomination");
+    // Navigate to Currency
+    Navigator.pushNamed(context, "currencyDenomination");
   }
 
   void _navigateToObject() {
     // Navigate to Object module\
-    
-  Navigator.pushNamed(context, "objectRecogination");
+
+    Navigator.pushNamed(context, "objectRecogination");
   }
 
   void _navigateToObstacle() {
     // Navigate to Obstacle module
-    
-  Navigator.pushNamed(context, "obstacldeDetection");
+
+    Navigator.pushNamed(context, "obstacldeDetection");
   }
 
   @override
@@ -44,8 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Home Screen'),
       ),
       body: GestureDetector(
-        onTap: (){
-           flutterTts.speak("PLease use double finger to swipe");
+        onTap: () {
+          flutterTts.speak("PLease use double finger to swipe");
         },
         onHorizontalDragUpdate: (details) {
           if (details.delta.dx > 0) {
