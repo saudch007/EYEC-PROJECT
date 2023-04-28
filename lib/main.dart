@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       
         '/homeScreen': (context) =>  HomeScreen(),
           '/obstacleDetection': (context) =>  obstacleDetection(),
-            '/currenctDenomination': (context) =>  currenctDenomination(),
-            'objectRecogination':(context) => objectRecogination()
+            '/currencyDenomination': (context) =>  currenctDenomination(),
+            '/objectRecogination':(context) => objectRecogination()
       },
      
     );
