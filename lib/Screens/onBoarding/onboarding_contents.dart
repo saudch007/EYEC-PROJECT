@@ -12,20 +12,18 @@ class OnboardingContents {
 
 List<OnboardingContents> contents = [
   OnboardingContents(
-    title: "Detect denomination on ",
+    title: "Detect currency denomination",
     image: "assets/images/image1.png",
-    desc: "Remember to keep track of your professional accomplishments.",
+    desc: "You can detect denomination on an Pakistani currency note.",
   ),
   OnboardingContents(
     title: "Detect object in your radius",
     image: "assets/images/image2.png",
-    desc:
-        "But understanding the contributions our colleagues make to our teams and companies.",
+    desc: "You can detect objects by using phone camera.",
   ),
   OnboardingContents(
     title: "Detect product in your radius / optinal feature ",
     image: "assets/images/image3.png",
-    desc:
-        "Take control of notifications, collaborate live or on your own time.",
+    desc: "You can detect products by using phone camera.",
   ),
 ];
