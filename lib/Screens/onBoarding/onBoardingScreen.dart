@@ -46,7 +46,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  int val = 0;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -67,6 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 children: [
                   Image.asset(
+                    // Background image
                     contents[_currentPage].image,
                   ), //
                 ],
@@ -100,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       children: [
                         Image.asset(
-                          contents[i].image,
+                          "assets/logo.png/",
                           height: SizeConfig.blockV! * 35,
                         ),
                         SizedBox(

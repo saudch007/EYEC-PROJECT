@@ -13,7 +13,7 @@ class OnboardingContents {
 List<OnboardingContents> contents = [
   OnboardingContents(
     title: "Detect denomination on ",
-    image: "assets/images/image1.png",
+    image: "assets/images/image0.png",
     desc: "Remember to keep track of your professional accomplishments.",
   ),
   OnboardingContents(
