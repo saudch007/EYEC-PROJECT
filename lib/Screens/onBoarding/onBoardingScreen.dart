@@ -14,10 +14,12 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   late PageController _controller;
+  late PageController _controllerSecond;
 
   @override
   void initState() {
     _controller = PageController();
+    _controllerSecond = PageController();
     super.initState();
   }
 
@@ -57,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Stack(children: [
         PageView.builder(
           physics: const BouncingScrollPhysics(),
-          controller: _controller,
+          controller: _controllerSecond,
           onPageChanged: (value) => setState(() => _currentPage = value),
           itemCount: contents.length,
           itemBuilder: (context, i) {
