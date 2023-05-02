@@ -12,17 +12,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: OnboardingScreen(),
       routes: {
-      
-        '/homeScreen': (context) =>  HomeScreen(),
-          '/obstacleDetection': (context) =>  obstacleDetection(),
-            '/currencyDenomination': (context) =>  currenctDenomination(),
-            '/objectRecogination':(context) => objectRecogination()
+        '/homeScreen': (context) => HomeScreen(),
+        '/obstacleDetection': (context) => obstacleDetection(),
+        '/currenctDenomination': (context) => currenctDenomination(),
+        'objectRecogination': (context) => objectRecogination()
       },
-     
     );
   }
 }
