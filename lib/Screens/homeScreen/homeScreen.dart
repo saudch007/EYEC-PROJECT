@@ -23,19 +23,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _navigateToCurrency() {
     // Navigate to Currency 
-  Navigator.pushNamed(context, "currencyDenomination");
+  Navigator.pushNamed(context, "/currencyDenomination");
   }
 
   void _navigateToObject() {
     // Navigate to Object module\
     
-  Navigator.pushNamed(context, "objectRecogination");
+  Navigator.pushNamed(context, "/objectRecogination");
   }
 
   void _navigateToObstacle() {
     // Navigate to Obstacle module
     
-  Navigator.pushNamed(context, "obstacldeDetection");
+  Navigator.pushNamed(context, "/obstacleDetection");
   }
 
   @override
@@ -52,16 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         onHorizontalDragUpdate: (details) {
           if (details.delta.dx > 0) {
-            flutterTts.speak("Object");
+            flutterTts.speak("Starting camera  for Object detection, Please scan the desire object ");
             _navigateToObject();
           } else if (details.delta.dx < 0) {
-            flutterTts.speak("Currency");
+            flutterTts.speak("Starting camera  for Currency note detection, Please scan the desire note");
             _navigateToCurrency();
           }
         },
         onVerticalDragUpdate: (details) {
           if (details.delta.dy > 0) {
-            flutterTts.speak("Obstacle");
+            flutterTts.speak("Starting camera  for obstacle detection, Please scan you path continously");
             _navigateToObstacle();
           }
         },

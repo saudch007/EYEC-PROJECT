@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
       home: OnboardingScreen(),
       routes: {
         '/homeScreen': (context) => HomeScreen(),
-        '/obstacleDetection': (context) => obstacleDetection(),
-        '/currenctDenomination': (context) => currenctDenomination(),
-        'objectRecogination': (context) => objectRecogination(cameras: cameras)
+        '/obstacleDetection': (context) => obstacleDetection(cameras: cameras),
+        '/currencyDenomination': (context) => currenctDenomination(cameras: cameras),
+        '/objectRecogination': (context) => objectRecogination(cameras: cameras)
       },
     );
   }
