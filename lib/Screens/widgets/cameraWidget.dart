@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class cameraWidget extends StatelessWidget {
-  const cameraWidget({
+  const  cameraWidget({
     super.key,
     required this.cameraValue,
     required CameraController cameraController,

@@ -6,15 +6,35 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
   final FlutterTts flutterTts = FlutterTts();
+  late AnimationController _controller;
+  late Tween<Offset> _tween=Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(-0.5, 100),
+    );
 
   @override
   void initState() {
     super.initState();
     _speakInstruction();
+     _controller = AnimationController(
+    vsync: this,
+    duration: Duration(milliseconds: 200),
+  );
+  
+  _controller.repeat(reverse: true);
+
+
+ 
   }
 
+
+@override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   Future<void> _speakInstruction() async {
     await flutterTts.setLanguage("en-US");
     await flutterTts.speak(
@@ -40,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -69,28 +90,40 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(
-                Icons.arrow_left,
-                size: 80,
-              ),
+             SlideTransition(
+  position: _tween.animate(_controller),
+  child: SizedBox(
+    height: 90,
+    width: 90,
+    
+        child: Image.asset('assets/images/swipeLeft.png')),
+),
               SizedBox(height: 16),
-              Text(
-                'Swipe Left for Currency',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24),
+              Center(
+                child: Text(
+                  'Swipe Left for Currency',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24),
+                ),
               ),
               SizedBox(height: 50),
-              Icon(
-                Icons.arrow_right,
-                size: 80,
-              ),
+                SlideTransition(
+                
+  position: _tween.animate(_controller),
+  child: SizedBox(
+    height: 90,
+    width: 90,
+    
+        child: Image.asset('assets/images/swipeRight.png')),
+),
               SizedBox(height: 16),
-              Text(
-                'Swipe Right for Object',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24),
+              Center(
+                child: Text(
+                  'Swipe Right for Object',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24),
+                ),
               ),
               SizedBox(height: 50),
               Icon(
