@@ -67,10 +67,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.all(40.0),
               child: Column(
                 children: [
+                  SizedBox(
+                    height: SizeConfig.blockV! * 30,
+                  ),
                   Image.asset(
                     // Background image
-                    contents[_currentPage].image,
-                    height: SizeConfig.blockV! * 90,
+                    'assets/images/logo.png',
+                    height: SizeConfig.blockV! * 35,
                   ), //
                 ],
               ),
@@ -102,12 +105,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     padding: const EdgeInsets.all(40.0),
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/logo.png',
-                          height: SizeConfig.blockV! * 35,
-                        ),
                         SizedBox(
-                          height: (height >= 840) ? 60 : 30,
+                          height: SizeConfig.blockV! * 5,
+                        ),
+                        Image.asset(
+                          contents[_currentPage].image,
+                          height: SizeConfig.blockV! * 30,
+                          width: SizeConfig.blockH! * 30,
                         ),
                         Text(
                           contents[i].title,
