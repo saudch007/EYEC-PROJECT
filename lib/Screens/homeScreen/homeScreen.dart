@@ -8,24 +8,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
   final FlutterTts flutterTts = FlutterTts();
-  late AnimationController _controller;
-  late Tween<Offset> _tween=Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(-0.5, 100),
+    late final  AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 100),
+    vsync: this,
+  );
+
+
+  late final Animation<Offset> _animation= Tween<Offset>(
+      begin: Offset(-1.0, 0.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
     );
+
+  late final Animation<Offset> _animation_ForRIght= Tween<Offset>(
+       begin: Offset.zero,
+      end: Offset(0.0, -1.0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
 
   @override
   void initState() {
     super.initState();
     _speakInstruction();
-     _controller = AnimationController(
-    vsync: this,
-    duration: Duration(milliseconds: 200),
-  );
+       _controller.repeat();
   
-  _controller.repeat(reverse: true);
-
-
  
   }
 
@@ -91,15 +106,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             SlideTransition(
-  position: _tween.animate(_controller),
-  child: SizedBox(
-    height: 90,
-    width: 90,
-    
-        child: Image.asset('assets/images/swipeLeft.png')),
-),
-              SizedBox(height: 16),
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: SlideTransition(
+                              position: _animation,
+                            
+                        child: Image.asset('assets/images/swipeLeft.png',color: Colors.black,)
+                            ),
+                ), SizedBox(height: 16),
               Center(
                 child: Text(
                   'Swipe Left for Currency',
@@ -108,15 +123,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
               SizedBox(height: 50),
-                SlideTransition(
-                
-  position: _tween.animate(_controller),
-  child: SizedBox(
-    height: 90,
-    width: 90,
-    
-        child: Image.asset('assets/images/swipeRight.png')),
-),
+           Container(
+                  height: 100,
+                  width: 300,
+                  child: SlideTransition(
+                              position: _animation_ForRIght,
+                            
+                        child: Image.asset('assets/images/swipeRight.png',color: Colors.black,)
+                            ),
+                ), SizedBox(height: 16),
               SizedBox(height: 16),
               Center(
                 child: Text(
@@ -127,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
               SizedBox(height: 50),
               Icon(
-                Icons.arrow_downward,
+                Icons.touch_app,
                 size: 80,
               ),
               SizedBox(height: 16),
