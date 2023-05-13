@@ -4,6 +4,8 @@ import 'package:sample/Screens/currencyDenomination/currencyDenominationScreen.d
 import 'package:sample/Screens/homeScreen/homeScreen.dart';
 import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
 import 'package:sample/Screens/obstacleDetection/obstacleDetection.dart';
+import 'package:sample/toCheck.dart';
+import 'package:sample/tocheck2.dart';
 import 'Screens/onBoarding/onBoardingScreen.dart';
 
 Future<void> main() async {
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
         '/homeScreen': (context) => HomeScreen(),
         '/obstacleDetection': (context) => obstacleDetection(cameras: cameras),
         '/currencyDenomination': (context) => currenctDenomination(cameras: cameras),
-        '/objectRecogination': (context) => objectRecogination(cameras: cameras)
+        '/objectRecogination': (context) => ObjectRecognition(cameras: cameras)
       },
     );
   }

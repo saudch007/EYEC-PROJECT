@@ -8,7 +8,7 @@ import '../widgets/cameraWidget.dart';
 class currenctDenomination extends StatefulWidget {
    final List<CameraDescription> cameras;
  
-  const currenctDenomination({super.key, required this.cameras});
+  const currenctDenomination({ required this.cameras});
   
 
   @override

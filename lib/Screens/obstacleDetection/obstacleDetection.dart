@@ -10,7 +10,7 @@ class obstacleDetection extends StatefulWidget {
 final List<CameraDescription> cameras;
   late Future<void> cameraValue;
 
-   obstacleDetection({super.key, required this.cameras});
+   obstacleDetection({ required this.cameras});
 
   @override
   State<obstacleDetection> createState() => _obstacleDetectionState();

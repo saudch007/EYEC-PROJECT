@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
   final FlutterTts flutterTts = FlutterTts();
     late final  AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 100),
+    duration: const Duration(seconds: 1),
     vsync: this,
   );
 
@@ -26,11 +26,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   late final Animation<Offset> _animation_ForRIght= Tween<Offset>(
        begin: Offset.zero,
-      end: Offset(0.0, -1.0),
+      end: Offset(-1.0, 0.0),
     ).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOut,
+      
+      ),
+    );
+
+late final Animation<Offset> _animation_ForDown= Tween<Offset>(
+       begin: Offset(0.0,-1.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      
       ),
     );
 
@@ -107,10 +119,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
                 Container(
-                  height: 100,
-                  width: 100,
+                  height: 70,
+                  width: 70,
                   child: SlideTransition(
-                              position: _animation,
+                              position: _animation_ForRIght,
                             
                         child: Image.asset('assets/images/swipeLeft.png',color: Colors.black,)
                             ),
@@ -124,10 +136,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
               SizedBox(height: 50),
            Container(
-                  height: 100,
-                  width: 300,
+                  height: 70,
+                  width: 70,
                   child: SlideTransition(
-                              position: _animation_ForRIght,
+                              position: _animation,
                             
                         child: Image.asset('assets/images/swipeRight.png',color: Colors.black,)
                             ),
@@ -140,10 +152,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   style: TextStyle(fontSize: 24),
                 ),
               ),
-              SizedBox(height: 50),
-              Icon(
-                Icons.touch_app,
-                size: 80,
+              SizedBox(height: 70),
+              Container(
+                child: SlideTransition(
+                  position: _animation_ForDown,
+                  child: Icon(
+                    Icons.touch_app,
+                    size: 80,
+                  ),
+                ),
               ),
               SizedBox(height: 16),
               Text(

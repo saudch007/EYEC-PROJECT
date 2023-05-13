@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class cameraWidget extends StatelessWidget {
   const  cameraWidget({
-    super.key,
+
     required this.cameraValue,
     required CameraController cameraController,
   }) : _cameraController = cameraController;
