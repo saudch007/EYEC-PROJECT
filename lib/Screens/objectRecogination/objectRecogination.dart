@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
@@ -16,7 +17,7 @@ class ObjectRecognition extends StatefulWidget {
 }
 
 class _ObjectRecognitionState extends State<ObjectRecognition> {
-  late CameraController _cameraController;
+   CameraController? _cameraController;
   bool _isDetecting = false;
   bool _isDetected=false;
   late FlutterTts flutterTts;
@@ -29,6 +30,10 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
   @override
   void initState() {
+    _confidenceLevel=0.0;
+    _recognizedObject='NO';
+    _cameraController=null;
+
     super.initState();
     loadModel();
     initCamera();
@@ -38,8 +43,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   @override
   void dispose() {
     Tflite.close();
-      _cameraController.stopImageStream();
-      _cameraController.dispose();
+      _cameraController!.stopImageStream();
+      _cameraController!.dispose();
     
     _isDetecting = false;
     _isDetected=false;
@@ -48,12 +53,12 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
   void initCamera() {
     _cameraController = CameraController(widget.cameras[0], ResolutionPreset.medium);
-    cameraValue = _cameraController.initialize().then((_) {
+    cameraValue = _cameraController!.initialize().then((_) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _cameraController.startImageStream((CameraImage image) {
+        _cameraController!.startImageStream((CameraImage image) {
           if (_isDetecting || _cameraController == null) return;
           _isDetecting = true;
 
@@ -87,17 +92,45 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
         asynch: true,
       );
 
-setState(() {
+      
+  if (recognitionsList != null && recognitionsList.isNotEmpty) {
+    Map<String, dynamic> map = recognitionsList[0];
+    if (map.containsKey("scores") && map.containsKey("labels")) {
+      List<dynamic>? scores = map["scores"];
+      List<dynamic>? labels = map["labels"];
+
+      if (scores != null && labels != null && scores.isNotEmpty && labels.isNotEmpty) {
+        // Get the label and score with the highest probability
+        int index = 0;
+        double maxScore = scores[0];
+        for (int i = 1; i < scores.length; i++) {
+          if (scores[i] > maxScore) {
+            index = i;
+            maxScore = scores[i];
+          }
+        }
+        String label = labels[index];
+        double confidence = maxScore;
+
+        // Do something with the label and confidence
+        print("Label: $label");
+        print("Confidence: $confidence");
+        setState(() {
   
-      _confidenceLevel=recognitionsList![0]['confidence'];
-      _recognizedObject=recognitionsList![0]['label'];
+      _confidenceLevel=confidence;
+      _recognizedObject=label;
 });
-  if(recognitionsList![0]['confidence']>1)
+      }
+    }
+  }
+
+
+  if(recognitionsList![0]['confidence']>=1)
       setState(() {
-        _recognizedObject = recognitionsList![0]['label'];
+        _recognizedObject = recognitionsList![0]['label'][0];
         _confidenceLevel=recognitionsList[0]['confidence'];
         _isDetected=true;
-        _cameraController.stopImageStream();
+        _cameraController!.stopImageStream();
         
       });
     } catch (e) {
@@ -115,7 +148,7 @@ setState(() {
     _timer = Timer(Duration(seconds: 10), () {
       setState(() {
         _timerActive = false;
-        _cameraController.stopImageStream();
+        _cameraController!.stopImageStream();
       });
     });
   }
@@ -125,7 +158,7 @@ setState(() {
       return;
     }
     setState(() {
-      _cameraController.startImageStream((CameraImage image) {
+      _cameraController!.startImageStream((CameraImage image) {
         if (!_isDetecting && !_timerActive) {
           _isDetecting = true;
           runModelOnFrame(image);
@@ -144,9 +177,9 @@ setState(() {
         onWillPop: _onBackPressed,
         child: Scaffold(
           
-          body: Column(
+          body: Column(  
             children: [
-             _isDetected==false? CameraPreview(_cameraController):Center(child: Text("Detected")),
+             _isDetected==false? CameraPreview(_cameraController!):Center(child: Text("Detected")),
               Positioned(
                 bottom: 16,
                 right: 16,
@@ -169,7 +202,7 @@ setState(() {
   }
    Future<bool> _onBackPressed() {
     // your code here
-    _cameraController.stopImageStream();
+    _cameraController!.stopImageStream();
     _isDetected=false;
     setState(() {
       
@@ -178,6 +211,6 @@ setState(() {
   }
 }
 
-
+//multiply confidence by 100 to get full in to perecentage.
 
 //if no note detected after 10 seconds the module will be close , you have to double tap to again open that module

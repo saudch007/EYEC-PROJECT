@@ -4,6 +4,7 @@ import 'package:sample/Screens/currencyDenomination/currencyDenominationScreen.d
 import 'package:sample/Screens/homeScreen/homeScreen.dart';
 import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
 import 'package:sample/Screens/obstacleDetection/obstacleDetection.dart';
+import 'package:sample/Screens/splashScreen/splashScreen.dart';
 import 'package:sample/toCheck.dart';
 import 'package:sample/tocheck2.dart';
 import 'Screens/onBoarding/onBoardingScreen.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+      home: SplashScreenPage(),
       routes: {
         '/homeScreen': (context) => HomeScreen(),
         '/obstacleDetection': (context) => obstacleDetection(cameras: cameras),
