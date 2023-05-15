@@ -1,7 +1,10 @@
+import 'package:flutter_tts/flutter_tts.dart';
+
 class OnboardingContents {
   final String title;
   final String image;
   final String desc;
+  FlutterTts flutterTts=new FlutterTts();
 
   OnboardingContents({
     required this.title,
@@ -15,6 +18,7 @@ List<OnboardingContents> contents = [
     title: "Detect currency denomination",
     image: "assets/images/image1.png",
     desc: "You can detect denomination on an Pakistani currency note.",
+  
   ),
   OnboardingContents(
     title: "Detect object in your radius",
