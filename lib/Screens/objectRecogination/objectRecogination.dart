@@ -17,7 +17,7 @@ class ObjectRecognition extends StatefulWidget {
 }
 
 class _ObjectRecognitionState extends State<ObjectRecognition> {
-   CameraController? _cameraController;
+   late CameraController _cameraController;
      final FlutterTts flutterTts = FlutterTts();
   bool _isDetecting = false;
   bool _isDetected=false;
@@ -32,7 +32,6 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   void initState() {
     _confidenceLevel=0.0;
     _recognizedObject='NO';
-    _cameraController=null;
 
     super.initState();
     loadModel();
@@ -100,9 +99,9 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 });
 
 
-  if(recognitionsList![0]['confidence']>0.99)
+  if(recognitionsList![0]['confidence']>0.999)
       setState(() {
-        _recognizedObject = recognitionsList![0]['label'];
+        _recognizedObject = recognitionsList[0]['label'];
         _confidenceLevel=recognitionsList[0]['confidence'];
         _isDetected=true;
         _cameraController!.stopImageStream();
@@ -185,20 +184,11 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
     return Column(  
           children: [
            _isDetected==false? CameraPreview(_cameraController!):Center(child: Text("Detected")),
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: Column(
-                
-                children: [ 
-                  Text('$_recognizedObject',style: 
-                  TextStyle(fontSize: 40),),
-                  Text(
-                    '$_confidenceLevel',
-                    style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 18, 0, 0)),
-                  ),
-                ],
-              ),
+              Text('$_recognizedObject',style: 
+            TextStyle(fontSize: 40),),
+            Text(
+              '$_confidenceLevel',
+              style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 18, 0, 0)),
             ),
           ],
         );
