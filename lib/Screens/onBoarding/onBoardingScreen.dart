@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:sample/Screens/onBoarding/size_config.dart';
+import 'package:sample/Screens/onBoarding/sizeconfig.dart';
 
 import 'onboarding_contents.dart';
 
@@ -16,7 +16,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   late PageController _controller;
   late PageController _controllerSecond;
-  FlutterTts flutterTts=new FlutterTts();
+  FlutterTts flutterTts = new FlutterTts();
 
   @override
   void initState() {
@@ -59,12 +59,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       backgroundColor: colors[_currentPage],
       body: GestureDetector(
-        onTap: ()=>{
-    
-         _currentPage + 1 == contents.length?   Navigator.pushNamed(context, '/homeScreen'): _controller.nextPage(
-                                       duration: const Duration(milliseconds: 200),
-                                       curve: Curves.easeIn,
-                                     )
+        onTap: () => {
+          _currentPage + 1 == contents.length
+              ? Navigator.pushNamed(context, '/homeScreen')
+              : _controller.nextPage(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeIn,
+                )
         },
         child: Stack(children: [
           PageView.builder(
@@ -78,12 +79,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: SizeConfig.blockV! * 30,
+                      height: 10 * 30,
                     ),
                     Image.asset(
                       // Background image
                       'assets/images/logo.png',
-                      height: SizeConfig.blockV! * 35,
+                      height: 10 * 35,
                     ), //
                   ],
                 ),
@@ -108,10 +109,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: PageView.builder(
                   physics: const BouncingScrollPhysics(),
                   controller: _controller,
-                  onPageChanged: (value) => setState(() => _currentPage = value),
+                  onPageChanged: (value) =>
+                      setState(() => _currentPage = value),
                   itemCount: contents.length,
                   itemBuilder: (context, i) {
-                    flutterTts.speak(contents[i].desc+"PLease double tap to continue");
+                    flutterTts.speak(
+                        contents[i].desc + "PLease double tap to continue");
                     return Padding(
                       padding: const EdgeInsets.all(40.0),
                       child: Column(
@@ -119,7 +122,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           SizedBox(
                             height: SizeConfig.blockV! * 5,
                           ),
-                          
                           Image.asset(
                             contents[_currentPage].image,
                             height: SizeConfig.blockV! * 30,
@@ -135,7 +137,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                           ),
                           const SizedBox(height: 15),
-                          
                           Text(
                             contents[i].desc,
                             style: TextStyle(
