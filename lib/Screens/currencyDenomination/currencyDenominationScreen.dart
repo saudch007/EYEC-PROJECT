@@ -101,7 +101,7 @@ class _currencyDetectionState extends State<currencyDetection> {
         imageMean: 0,
         imageStd: 255,
         rotation: 90,
-        numResults: 2,
+        numResults: 7,
         threshold: 0.9,
         asynch: true,
       );

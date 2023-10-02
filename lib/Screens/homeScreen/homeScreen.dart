@@ -94,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         backgroundColor: Colors.black,
         toolbarHeight: 70,
-        title: Text('Home Screen'),
+        centerTitle: false,
+        title: Text('Slide to  the options'),
       ),
       body: GestureDetector(
         onHorizontalDragUpdate: (details) {
@@ -115,85 +116,122 @@ class _HomeScreenState extends State<HomeScreen>
             //    _navigateToObstacle();
           }
         },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 70,
-                  width: 70,
-                  child: SlideTransition(
-                      position: _animation_ForRIght,
-                      child: Image.asset(
-                        'assets/images/swipeLeft.png',
-                        color: Colors.black,
-                      )),
-                ),
-                SizedBox(height: 16),
-                Center(
-                  child: Text(
-                    'Swipe Left for Object',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.red,
+              height: 220,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: SlideTransition(
+                            position: _animation_ForRIght,
+                            child: Image.asset(
+                              'assets/images/swipeLeft.png',
+                              color: Colors.black,
+                            )),
+                      ),
+                      Image.asset("assets/images/object.png",
+                          height: 120, width: 120),
+                    ],
                   ),
-                ),
-                SizedBox(height: 50),
-                Container(
-                  height: 70,
-                  width: 70,
-                  child: SlideTransition(
-                      position: _animation,
-                      child: Image.asset(
-                        'assets/images/swipeRight.png',
-                        color: Colors.black,
-                      )),
-                ),
-                SizedBox(height: 16),
-                SizedBox(height: 16),
-                Center(
-                  child: Text(
+                  Center(
+                    child: Text(
+                      'Swipe Left for Object',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // SizedBox(height: 50),
+            Container(
+              color: Colors.yellow,
+              height: 220,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: SlideTransition(
+                            position: _animation,
+                            child: Image.asset(
+                              'assets/images/swipeRight.png',
+                              color: Colors.black,
+                            )),
+                      ),
+                      Image.asset("assets/images/money.png",
+                          height: 120, width: 120),
+                    ],
+                  ),
+                  Text(
                     'Swipe Right for Currency',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24),
                   ),
-                ),
-                SizedBox(height: 70),
-                Container(
-                  child: SlideTransition(
-                    position: _animation_ForDown,
-                    child: Icon(
-                      Icons.touch_app,
-                      size: 80,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Swipe Down for Obstacle',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    SizedBox(width: 16),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => selectUsingImage()));
-                        },
-                        child: Text("Select image"))
-                  ],
-                )
-              ],
+                ],
+              ),
             ),
-          ),
+
+            Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.green,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SlideTransition(
+                        position: _animation_ForDown,
+                        child: Icon(
+                          Icons.touch_app,
+                          size: 100,
+                        ),
+                      ),
+                      Image.asset("assets/images/blind-man.png",
+                          height: 120, width: 120),
+                    ],
+                  ),
+                  Text(
+                    'Swipe Down for Obstacle',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ],
+              ),
+            ),
+            // Row(
+            //   children: [
+            //     SizedBox(width: 16),
+            //     ElevatedButton(
+            //         onPressed: () {
+            //           Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) => selectUsingImage()));
+            //         },
+            //         child: Text("Select image"))
+            //   ],
+            // )
+          ],
         ),
       ),
     );

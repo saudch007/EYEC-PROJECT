@@ -3,10 +3,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:sample/Screens/onBoarding/onBoardingScreen.dart';
 import 'dart:io';
 import 'dart:async';
 
+import 'package:sample/Screens/homeScreen/homeScreen.dart';
 
 class SplashScreenPage extends StatefulWidget {
   @override
@@ -25,8 +25,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     return Timer(duration, () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) {
-return 
-OnboardingScreen();        }),
+          return HomeScreen();
+        }),
       );
     });
   }
@@ -36,25 +36,23 @@ OnboardingScreen();        }),
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height:100),
-          
+          SizedBox(height: 100),
           Center(
             child: Image.asset(
               'assets/images/logo.png',
               fit: BoxFit.cover,
             ),
           ),
-       
           SizedBox(height: 10.0),
-              Text(
+          Text(
             'EyeC',
             style: TextStyle(
               fontSize: 50.0,
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 14, 13, 11),
-            ),),
+            ),
+          ),
           SizedBox(height: 30.0),
-         
         ],
       ),
     );
