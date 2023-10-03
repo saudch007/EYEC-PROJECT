@@ -1,21 +1,21 @@
-0 Apple
-1 Banana
-2 Beetroot
-3 Bell Pepper
-4 Cabbage
-5 Capsicum
-6 Carrot
-7 Cauliflower
-8 Chilli Pepper
-9 Cucumber
-10 Garlic
-11 Ginger
-12 Grapes
-13 Lemon
-14 Mango
-15 Onion
-16 Orange
-17 Pomegranate
-18 Potato
-19 Tomato
-20 Watermelon
+Apple
+Banana
+Beetroot
+Bell Pepper
+Cabbage
+Capsicum
+Carrot
+Cauliflower
+Chilli Pepper
+Cucumber
+Garlic
+Ginger
+Grapes
+Lemon
+Mango
+Onion
+Orange
+Pomegranate
+Potato
+Tomato
+Watermelon

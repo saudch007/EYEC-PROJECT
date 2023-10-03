@@ -110,10 +110,6 @@ class _currencyDetectionState extends State<currencyDetection> {
         flutterTts.speak("PLease input only one note");
       }
 
-      setState(() {
-        _confidenceLevel = recognitionsList[0]['confidence'];
-        _recognizedObject = recognitionsList[0]['label'];
-      });
       double getConfidence = recognitionsList[0]['confidence'] * 10000;
 
       setState(() {
