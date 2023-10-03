@@ -70,10 +70,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   Future loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/objectModel.tflite',
-      labels: 'assets/objectLabels.txt',
-      isAsset: true,
-      useGpuDelegate: false,
+      model: 'assets/object.tflite',
+      labels: 'assets/lobject.txt',
     );
   }
 
@@ -94,15 +92,15 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
     try {
       wait(53);
-      List<dynamic>? recognitionsList = await Tflite.runModelOnFrame(
+      List<dynamic>? recognitionsList = await Tflite.detectObjectOnFrame(
         bytesList: image.planes.map((plane) => plane.bytes).toList(),
         imageHeight: image.height,
         imageWidth: image.width,
-        imageMean: 0,
-        imageStd: 255,
+        imageMean: 127.6,
+        imageStd: 127.5,
         rotation: 90,
-        numResults: 2,
-        threshold: 0.9,
+        numResultsPerClass: 1,
+        threshold: 0.4,
         asynch: true,
       );
 
