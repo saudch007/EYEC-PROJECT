@@ -1,4 +1,6 @@
+import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sample/Screens/homeScreen/selectUsingimage.dart';
 
@@ -50,6 +52,22 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _speakInstruction();
     _controller.repeat();
+    _startService();
+  }
+
+  Future<void> _startService() async {
+    try {
+      // Launch the app using the BroadcastReceiver
+      final AndroidIntent intent = AndroidIntent(
+        action: 'com.example.sample.LAUNCH_APP',
+        package: 'com.package.sample', // Replace with your app's package name
+        componentName:
+            'com.package.sample/.MainActivity', // Replace with your app's main activity
+      );
+      intent.launch();
+    } catch (e) {
+      print('Error starting service: $e');
+    }
   }
 
   @override

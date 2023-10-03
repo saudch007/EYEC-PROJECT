@@ -23,12 +23,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    platform.setMethodCallHandler((MethodCall call) async {
-      if (call.method == 'onVolumeDownPressed') {
-        // Volume down button was pressed, start your app
-        // Implement your logic here
-      }
-    });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreenPage(),

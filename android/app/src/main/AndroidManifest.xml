@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sample">
+
    <application
         android:label="sample"
         android:name="${applicationName}"
@@ -29,13 +30,13 @@
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
 
              <receiver
-    android:name=".BootReceiver"
+    android:name="com.package.sample.CallBroadcastReceiver"
     android:enabled="true"
     android:exported="false">
+
     <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <action android:name="android.intent.action.QUICKBOOT_POWERON" />        
-        <action android:name="android.intent.action.MEDIA_BUTTON" />
+     <action android:name="com.example.sample" />       
+        <action android:name="android.media.VOLUME_CHANGED_ACTION" />
     </intent-filter>
 </receiver>
     
