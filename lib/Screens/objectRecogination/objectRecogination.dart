@@ -70,8 +70,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   Future loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/object.tflite',
-      labels: 'assets/lobject.txt',
+      model: 'assets/objectModel.tflite',
+      labels: 'assets/objectLabels.txt',
     );
   }
 
@@ -92,42 +92,48 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
     try {
       wait(53);
-      List<dynamic>? recognitionsList = await Tflite.detectObjectOnFrame(
+      List<dynamic>? recognitionsList = await Tflite.runModelOnFrame(
         bytesList: image.planes.map((plane) => plane.bytes).toList(),
         imageHeight: image.height,
         imageWidth: image.width,
         imageMean: 127.6,
         imageStd: 127.5,
         rotation: 90,
-        numResultsPerClass: 1,
         threshold: 0.4,
         asynch: true,
       );
 
       if (recognitionsList!.length > 1) {
-        flutterTts.speak("PLease input only one note");
+        flutterTts.speak("PLease input only one object");
       }
 
       setState(() {
         _confidenceLevel = recognitionsList[0]['confidence'];
         _recognizedObject = recognitionsList[0]['label'];
       });
-      double getConfidence = recognitionsList[0]['confidence'] * 10000;
+      double getConfidence = recognitionsList[0]['confidence'] * 100;
 
       setState(() {
         _confidenceLevel = getConfidence;
       });
 
-      if (recognitionsList[0]['confidence'] > 0.9999) {
+      if (recognitionsList[0]['confidence'] > 0.99) {
         setState(() {
           _recognizedObject = recognitionsList[0]['label'];
           _confidenceLevel = recognitionsList[0]['confidence'];
           _isDetected = true;
           _cameraController.stopImageStream();
         });
-      } else if (recognitionsList[0]['confidence'] < 0.915555) {
-        wait(5).then((value) =>
-            {flutterTts.speak("PLease adjust the note in front of camera")});
+      } else if (recognitionsList[0]['confidence'] < 0.91) {
+        wait(5).then((value) => Future.delayed(Duration(seconds: 5), () {
+              if (_isDetected == false) {
+                _cameraController.stopImageStream();
+                _isDetected = false;
+                setState(() {});
+                flutterTts
+                    .speak("PLease adjust the object  in front of camera");
+              }
+            }));
       }
       ;
     } catch (e) {
@@ -165,13 +171,22 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: Text("Currency detection"),
+              title: Text("Object detection"),
               backgroundColor: Colors.black,
             ),
             body: _isDetected == false
                 ? Detecting_Camera_Widget()
                 : GestureDetector(
-                    onDoubleTap: () {},
+                    onDoubleTap: () {
+                      _cameraController.startImageStream((CameraImage image) {
+                        if (_isDetecting || _cameraController == null) return;
+                        _isDetecting = true;
+
+                        runModelOnFrame(image);
+                      });
+                      _isDetected = false;
+                      setState(() {});
+                    },
                     child:
                         afterDetection(_recognizedObject, _confidenceLevel))),
       ),
@@ -179,10 +194,9 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   }
 
   Column afterDetection(String recognizedObject, double confidenceLevel) {
-    flutterTts.speak("This note is of " + recognizedObject + "rupees");
+    flutterTts.speak("This object is  " + recognizedObject);
     return Column(
       children: [
-        SizedBox(height: 100),
         Center(
             child: Text(
           "DETECTED",
@@ -192,8 +206,6 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
         SizedBox(
           height: 100,
         ),
-        NoteImages(recognizedObject),
-        SizedBox(height: 50),
         SizedBox(height: 30),
         Text(
           recognizedObject,
