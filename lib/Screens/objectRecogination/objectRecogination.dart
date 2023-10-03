@@ -107,6 +107,10 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
         flutterTts.speak("PLease input only one object");
       }
 
+      setState(() {
+        _confidenceLevel = recognitionsList[0]['confidence'];
+        _recognizedObject = recognitionsList[0]['label'];
+      });
       double getConfidence = recognitionsList[0]['confidence'] * 100;
 
       setState(() {
