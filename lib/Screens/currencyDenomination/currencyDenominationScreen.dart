@@ -77,8 +77,10 @@ class _currencyDetectionState extends State<currencyDetection> {
     );
   }
 
+  bool isInputBlack = false;
+  bool isNotoneInput = false;
+
   Future runModelOnFrame(CameraImage image) async {
-    bool isInputBlack = false;
     double averageBrightness = calculateAverageBrightness(image);
 
     // Define a threshold for black detection
@@ -93,45 +95,50 @@ class _currencyDetectionState extends State<currencyDetection> {
     }
 
     try {
-      wait(53);
       List<dynamic>? recognitionsList = await Tflite.runModelOnFrame(
         bytesList: image.planes.map((plane) => plane.bytes).toList(),
         imageHeight: image.height,
         imageWidth: image.width,
-        imageMean: 0,
-        imageStd: 255,
-        rotation: 90,
-        numResults: 7,
-        threshold: 0.9,
         asynch: true,
       );
 
       if (recognitionsList!.length > 1) {
-        flutterTts.speak("PLease input only one note");
+        if (isNotoneInput == false) {
+          flutterTts.speak("PLease input only one object");
+        } else {
+          await Future.delayed(const Duration(seconds: 3));
+        }
+        isNotoneInput = true;
       }
 
       setState(() {
         _confidenceLevel = recognitionsList[0]['confidence'];
         _recognizedObject = recognitionsList[0]['label'];
       });
-      double getConfidence = recognitionsList[0]['confidence'] * 10000;
+      double getConfidence = recognitionsList[0]['confidence'] * 100;
 
       setState(() {
         _confidenceLevel = getConfidence;
       });
 
-      if (recognitionsList[0]['confidence'] > 0.9999) {
+      if (recognitionsList[0]['confidence'] > 0.99) {
         setState(() {
           _recognizedObject = recognitionsList[0]['label'];
           _confidenceLevel = recognitionsList[0]['confidence'];
           _isDetected = true;
           _cameraController.stopImageStream();
         });
-      } else if (recognitionsList[0]['confidence'] < 0.915555) {
-        wait(5).then((value) =>
-            {flutterTts.speak("PLease adjust the note in front of camera")});
+      } else if (recognitionsList[0]['confidence'] < 0.55) {
+        _isDetected = false;
+        await Future.delayed(const Duration(seconds: 3), () {
+          flutterTts.speak("PLease adjust the object  in front of camera");
+        });
+      } else if (recognitionsList[0]['confidence'] > 0.55 &&
+          recognitionsList[0]['confidence'] < 0.99) {
+        await Future.delayed(const Duration(seconds: 3), () {
+          flutterTts.speak("PLease move the camera more nearer to the object");
+        });
       }
-      ;
     } catch (e) {
       print("Error running detection model: $e");
     } finally {
@@ -166,6 +173,7 @@ class _currencyDetectionState extends State<currencyDetection> {
           return _onBackPressed();
         },
         child: Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: Text("Currency detection"),
               backgroundColor: Colors.black,
@@ -200,7 +208,7 @@ class _currencyDetectionState extends State<currencyDetection> {
         Text(
           recognizedObject,
           style: TextStyle(
-              fontSize: 44, color: Colors.black, fontWeight: FontWeight.bold),
+              fontSize: 44, color: Colors.green, fontWeight: FontWeight.bold),
         ),
         Text(confidenceLevel.toString()),
       ],
@@ -210,16 +218,9 @@ class _currencyDetectionState extends State<currencyDetection> {
   Image NoteImages(String recognizedObject) {
     String imagePath;
 
-    switch (recognizedObject) {
-      case '10':
-        imagePath = "10b.jpg";
-
-        break;
-      default:
-    }
-
     return Image(
-        image: AssetImage("assets/images/notes/$recognizedObject" + "b.jpg"));
+        image:
+            AssetImage("assets/images/notes/$recognizedObject" + "1000.jpg"));
   }
 
   Column Detecting_Camera_Widget() {
@@ -227,14 +228,14 @@ class _currencyDetectionState extends State<currencyDetection> {
       children: [
         _isDetected == false
             ? CameraPreview(_cameraController!)
-            : Center(child: Text("Detected")),
+            : const Center(child: Text("Detected")),
         Text(
-          '$_recognizedObject',
-          style: TextStyle(fontSize: 40),
+          _recognizedObject,
+          style: TextStyle(fontSize: 20, color: Colors.green),
         ),
         Text(
-          '$_confidenceLevel',
-          style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 18, 0, 0)),
+          _confidenceLevel.toString(),
+          style: const TextStyle(fontSize: 14, color: Colors.green),
         ),
       ],
     );
