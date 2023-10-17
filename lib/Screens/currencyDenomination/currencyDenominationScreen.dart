@@ -130,13 +130,15 @@ class _currencyDetectionState extends State<currencyDetection> {
         });
       } else if (recognitionsList[0]['confidence'] < 0.55) {
         _isDetected = false;
+        _recognizedObject = "others";
         await Future.delayed(const Duration(seconds: 3), () {
-          flutterTts.speak("PLease adjust the object  in front of camera");
+          flutterTts.speak("PLease adjust the Note  in front of camera");
         });
       } else if (recognitionsList[0]['confidence'] > 0.55 &&
           recognitionsList[0]['confidence'] < 0.99) {
+        _recognizedObject = "Move nearer";
         await Future.delayed(const Duration(seconds: 3), () {
-          flutterTts.speak("PLease move the camera more nearer to the object");
+          flutterTts.speak("PLease move the camera more nearer to the Note");
         });
       }
     } catch (e) {
@@ -181,7 +183,16 @@ class _currencyDetectionState extends State<currencyDetection> {
             body: _isDetected == false
                 ? Detecting_Camera_Widget()
                 : GestureDetector(
-                    onDoubleTap: () {},
+                    onDoubleTap: () {
+                      _confidenceLevel = 0.0;
+                      _recognizedObject = "";
+                      _cameraController.startImageStream((CameraImage image) {
+                        if (_isDetecting || _cameraController == null) return;
+                        _isDetecting = true;
+
+                        runModelOnFrame(image);
+                      });
+                    },
                     child:
                         afterDetection(_recognizedObject, _confidenceLevel))),
       ),

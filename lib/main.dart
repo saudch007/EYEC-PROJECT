@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:sample/Screens/currencyDenomination/currencyDenominationScreen.dart';
 import 'package:sample/Screens/homeScreen/homeScreen.dart';
 import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
-import 'package:sample/Screens/obstacleDetection/obstacleDetection.dart';
+import 'package:sample/Screens/settings/settings.dart';
 import 'package:sample/Screens/splashScreen/splashScreen.dart';
+import 'package:sample/Screens/obstacleDetection/obstacleDetection.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,21 +24,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    platform.setMethodCallHandler((MethodCall call) async {
-      if (call.method == 'onVolumeDownPressed') {
-        // Volume down button was pressed, start your app
-        // Implement your logic here
-      }
-    });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreenPage(),
       routes: {
         '/homeScreen': (context) => HomeScreen(),
-        '/obstacleDetection': (context) => obstacleDetection(cameras: cameras),
+        //  '/obstacleDetection':
         '/currencyDenomination': (context) =>
             currencyDetection(cameras: cameras),
         '/objectRecogination': (context) => ObjectRecognition(cameras: cameras),
+        '/settings': (context) => const Settings(),
       },
     );
   }

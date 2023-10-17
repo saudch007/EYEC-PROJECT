@@ -129,10 +129,12 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
       } else if (recognitionsList[0]['confidence'] < 0.55) {
         _isDetected = false;
         await Future.delayed(const Duration(seconds: 3), () {
+          _recognizedObject = "Others";
           flutterTts.speak("PLease adjust the object  in front of camera");
         });
       } else if (recognitionsList[0]['confidence'] > 0.55 &&
           recognitionsList[0]['confidence'] < 0.99) {
+        _recognizedObject = "Others";
         await Future.delayed(const Duration(seconds: 3), () {
           flutterTts.speak("PLease move the camera more nearer to the object");
         });
@@ -179,6 +181,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
                 ? Detecting_Camera_Widget()
                 : GestureDetector(
                     onDoubleTap: () {
+                      _confidenceLevel = 0.0;
+                      _recognizedObject = "";
                       _cameraController.startImageStream((CameraImage image) {
                         if (_isDetecting || _cameraController == null) return;
                         _isDetecting = true;

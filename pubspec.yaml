@@ -40,6 +40,7 @@ dependencies:
   shared_preferences: ^2.1.1
   flutter_tflite: ^1.0.1
   image: ^3.3.0
+  proximity_sensor: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Mulish-Light.ttf
         - asset: assets/fonts/Mulish-SemiBold.ttf
+
+    - family: quickens
+      fonts:
+        - asset: assets/fonts/quickens.otf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
