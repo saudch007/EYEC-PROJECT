@@ -25,8 +25,6 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   String _recognizedObject = 'NO';
 
   double _confidenceLevel = 0.0;
-  bool _timerActive = false;
-  Timer? _timer;
 
   @override
   void initState() {

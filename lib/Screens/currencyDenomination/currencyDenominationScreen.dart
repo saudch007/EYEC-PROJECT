@@ -1,15 +1,12 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:math';
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:sample/Screens/currencyDenomination/showCurrency.dart';
 
 class currencyDetection extends StatefulWidget {
   final List<CameraDescription> cameras;
-
   const currencyDetection({required this.cameras, Key? key}) : super(key: key);
 
   @override
@@ -20,19 +17,11 @@ class _currencyDetectionState extends State<currencyDetection> {
   late CameraController _cameraController;
   final FlutterTts flutterTts = FlutterTts();
   bool _isDetecting = false;
-  bool _isDetected = false;
   late Future<void> cameraValue;
   String _recognizedObject = 'NO';
 
-  double _confidenceLevel = 0.0;
-  bool _timerActive = false;
-  Timer? _timer;
-
   @override
   void initState() {
-    _confidenceLevel = 0.0;
-    _recognizedObject = 'NO';
-
     super.initState();
     loadModel();
     initCamera();
@@ -44,21 +33,19 @@ class _currencyDetectionState extends State<currencyDetection> {
     _cameraController.stopImageStream();
     _cameraController.dispose();
 
-    _isDetecting = false;
-    _isDetected = false;
     super.dispose();
   }
 
   void initCamera() {
     _cameraController =
         CameraController(widget.cameras[0], ResolutionPreset.medium);
-    cameraValue = _cameraController!.initialize().then((_) {
+    cameraValue = _cameraController.initialize().then((_) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _cameraController!.startImageStream((CameraImage image) {
-          if (_isDetecting || _cameraController == null) return;
+        _cameraController.startImageStream((CameraImage image) {
+          if (_isDetecting) return;
           _isDetecting = true;
 
           runModelOnFrame(image);
@@ -83,11 +70,9 @@ class _currencyDetectionState extends State<currencyDetection> {
   Future runModelOnFrame(CameraImage image) async {
     double averageBrightness = calculateAverageBrightness(image);
 
-    // Define a threshold for black detection
-    final blackThreshold = 50;
+    const blackThreshold = 50;
 
     if (averageBrightness < blackThreshold) {
-      // Input is black, perform your desired action (e.g., speak)
       if (isInputBlack == false) {
         flutterTts.speak("Input is black, please put camera in front of note.");
         isInputBlack = true;
@@ -111,25 +96,28 @@ class _currencyDetectionState extends State<currencyDetection> {
         isNotoneInput = true;
       }
 
-      setState(() {
-        _confidenceLevel = recognitionsList[0]['confidence'];
-        _recognizedObject = recognitionsList[0]['label'];
-      });
-      double getConfidence = recognitionsList[0]['confidence'] * 100;
-
-      setState(() {
-        _confidenceLevel = getConfidence;
-      });
+      // setState(() {
+      //   _confidenceLevel = recognitionsList[0]['confidence'];
+      //   _recognizedObject = recognitionsList[0]['label'];
+      // });
 
       if (recognitionsList[0]['confidence'] > 0.99) {
-        setState(() {
-          _recognizedObject = recognitionsList[0]['label'];
-          _confidenceLevel = recognitionsList[0]['confidence'];
-          _isDetected = true;
-          _cameraController.stopImageStream();
-        });
+        _recognizedObject = recognitionsList[0]['label'];
+
+        _cameraController.stopImageStream();
+        flutterTts.stop();
+
+        _cameraController.dispose();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => showCurrency(
+                    recognizedObject: _recognizedObject,
+                  )),
+        );
+        recognitionsList.clear();
       } else if (recognitionsList[0]['confidence'] < 0.55) {
-        _isDetected = false;
         _recognizedObject = "others";
         await Future.delayed(const Duration(seconds: 3), () {
           flutterTts.speak("PLease adjust the Note  in front of camera");
@@ -142,125 +130,115 @@ class _currencyDetectionState extends State<currencyDetection> {
         });
       }
     } catch (e) {
-      print("Error running detection model: $e");
+      //   print("Error running detection model: $e");
     } finally {
       _isDetecting = false;
     }
   }
 
-  Future<void> wait(int milliseconds) {
-    return Future.delayed(Duration(seconds: milliseconds));
-  }
-
-  double calculateAverageBrightness(CameraImage image) {
-    final plane = image.planes[0];
-    final bytes = plane.bytes;
-    double totalBrightness = 0;
-
-    for (int i = 0; i < bytes.length; i += plane.bytesPerPixel!) {
-      final pixel = bytes[i];
-      totalBrightness += pixel;
-    }
-
-    final averageBrightness =
-        totalBrightness / (bytes.length / plane.bytesPerPixel!);
-    return averageBrightness;
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: WillPopScope(
-        onWillPop: () {
-          return _onBackPressed();
-        },
-        child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              title: Text("Currency detection"),
-              backgroundColor: Colors.black,
-            ),
-            body: _isDetected == false
-                ? Detecting_Camera_Widget()
-                : GestureDetector(
-                    onDoubleTap: () {
-                      _confidenceLevel = 0.0;
-                      _recognizedObject = "";
-                      _cameraController.startImageStream((CameraImage image) {
-                        if (_isDetecting || _cameraController == null) return;
-                        _isDetecting = true;
+        child: WillPopScope(
+            onWillPop: () {
+              return _onBackPressed();
+            },
+            child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  title: const Text("Currency detection"),
+                  backgroundColor: Colors.black,
+                ),
+                body: Detecting_Camera_Widget())));
+    // : GestureDetector(
+    //     onDoubleTap: () {
+    //       _confidenceLevel = 0.0;
+    //       _recognizedObject = "";
+    //       _cameraController.startImageStream((CameraImage image) {
+    //         if (_isDetecting || _cameraController == null) return;
+    //         _isDetecting = true;
 
-                        runModelOnFrame(image);
-                      });
-                    },
-                    child:
-                        afterDetection(_recognizedObject, _confidenceLevel))),
-      ),
-    );
+    //         runModelOnFrame(image);
+    //       });
+    //     },
+    //     child:
+    //         afterDetection(_recognizedObject, _confidenceLevel))),
   }
 
-  Column afterDetection(String recognizedObject, double confidenceLevel) {
-    flutterTts.speak("This note is of " + recognizedObject + "rupees");
-    return Column(
-      children: [
-        SizedBox(height: 100),
-        Center(
-            child: Text(
-          "DETECTED",
-          style: TextStyle(
-              fontSize: 50, color: Colors.red, fontWeight: FontWeight.bold),
-        )),
-        SizedBox(
-          height: 100,
-        ),
-        NoteImages(recognizedObject),
-        SizedBox(height: 50),
-        SizedBox(height: 30),
-        Text(
-          recognizedObject,
-          style: TextStyle(
-              fontSize: 44, color: Colors.green, fontWeight: FontWeight.bold),
-        ),
-        Text(confidenceLevel.toString()),
-      ],
-    );
-  }
-
-  Image NoteImages(String recognizedObject) {
-    String imagePath;
-
-    return Image(
-        image:
-            AssetImage("assets/images/notes/$recognizedObject" + "1000.jpg"));
-  }
+  // Column afterDetection(String recognizedObject, double confidenceLevel) {
+  //   flutterTts.speak("This note is of " + recognizedObject + "rupees");
+  //   return Column(
+  //     children: [
+  //       const SizedBox(height: 100),
+  //       const Center(
+  //           child: Text(
+  //         "DETECTED",
+  //         style: TextStyle(
+  //             fontSize: 50, color: Colors.red, fontWeight: FontWeight.bold),
+  //       )),
+  //       const SizedBox(
+  //         height: 100,
+  //       ),
+  //       NoteImages(recognizedObject),
+  //       const SizedBox(height: 50),
+  //       const SizedBox(height: 30),
+  //       Text(
+  //         recognizedObject,
+  //         style: const TextStyle(
+  //             fontSize: 44, color: Colors.green, fontWeight: FontWeight.bold),
+  //       ),
+  //       Text(confidenceLevel.toString()),
+  //     ],
+  //   );
+  // }
 
   Column Detecting_Camera_Widget() {
     return Column(
       children: [
-        _isDetected == false
-            ? CameraPreview(_cameraController!)
-            : const Center(child: Text("Detected")),
-        Text(
-          _recognizedObject,
-          style: TextStyle(fontSize: 20, color: Colors.green),
-        ),
-        Text(
-          _confidenceLevel.toString(),
-          style: const TextStyle(fontSize: 14, color: Colors.green),
-        ),
+        Stack(
+          children: [
+            Container(
+                color: Colors.red,
+                height: MediaQuery.of(context).size.height - 100,
+                child: CameraPreview(_cameraController)),
+            Positioned(
+              bottom: 20,
+              left: 110,
+              child: Text(
+                "Detecting....",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        )
       ],
     );
   }
 
   Future<bool> _onBackPressed() {
-    // your code here
     _cameraController.stopImageStream();
-    _isDetected = false;
+
     setState(() {});
+
+    Navigator.pushNamed(context, '/onBoarding');
     return Future.value(true);
   }
 }
 
-//multiply confidence by 100 to get full in to perecentage.
+double calculateAverageBrightness(CameraImage image) {
+  final plane = image.planes[0];
+  final bytes = plane.bytes;
+  double totalBrightness = 0;
 
-//if no note detected after 10 seconds the module will be close , you have to double tap to again open that module
+  for (int i = 0; i < bytes.length; i += plane.bytesPerPixel!) {
+    final pixel = bytes[i];
+    totalBrightness += pixel;
+  }
+
+  final averageBrightness =
+      totalBrightness / (bytes.length / plane.bytesPerPixel!);
+  return averageBrightness;
+}

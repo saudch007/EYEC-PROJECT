@@ -2,8 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sample/Screens/currencyDenomination/currencyDenominationScreen.dart';
+import 'package:sample/Screens/currencyDenomination/showCurrency.dart';
 import 'package:sample/Screens/homeScreen/homeScreen.dart';
 import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
+import 'package:sample/Screens/onBoarding/onboardingScreen.dart';
 import 'package:sample/Screens/settings/settings.dart';
 import 'package:sample/Screens/splashScreen/splashScreen.dart';
 import 'package:sample/Screens/obstacleDetection/obstacleDetection.dart';
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreenPage(),
       routes: {
         '/homeScreen': (context) => HomeScreen(),
+        '/onboarding': (context) => OnboardingScreen(),
         //  '/obstacleDetection':
         '/currencyDenomination': (context) =>
             currencyDetection(cameras: cameras),

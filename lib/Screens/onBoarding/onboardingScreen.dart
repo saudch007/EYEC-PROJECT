@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -65,34 +64,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int currentIndex = 0;
 
-  List colors = const [
-    Color(0xffDAD3C8),
-    Color(0xffFFE5DE),
-    Color(0xffDCF6E6),
-  ];
-
   void _navigateToObjectRecogination() {
     Navigator.pushNamed(context, "/objectRecogination");
   }
 
   void _navigateToOstacleDetection() {
     flutterTts.speak("This module is currently disabled");
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("This module is currently disabled")));
-    // //   // Navigate to Currency
 
-    Navigator.pushNamed(context, "/objectRecogination");
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("This module is currently disabled")));
+
+    // Navigator.pushNamed(context, "/objectRecogination");
   }
 
   void _navigateToCurrency() {
-    // // Navigate to Object module\
-
     Navigator.pushNamed(context, "/currencyDenomination");
   }
 
   void _navigateToSettings() {
-    // // Navigate to Object module\
-
     Navigator.pushNamed(context, "/homeScreen");
   }
 
@@ -103,18 +92,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        toolbarHeight: 90,
-        title: const Text(
-          "EyeC",
-          style: TextStyle(
-              color: Colors.white, fontFamily: 'quickens', fontSize: 26),
+        elevation: 0,
+        toolbarHeight: 100,
+        title: Row(
+          children: [
+            Container(
+                height: 40,
+                width: 40,
+                decoration: const BoxDecoration(
+                    color: Colors.green, shape: BoxShape.circle),
+                child: Image.asset("assets/images/logo.png")),
+            const SizedBox(width: 10),
+            const Text(
+              "EyeC",
+              style: TextStyle(
+                  decorationStyle: TextDecorationStyle.dotted,
+                  color: Colors.white,
+                  fontFamily: 'quickens',
+                  fontSize: 26),
+            ),
+          ],
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.settings, size: 30, color: Colors.white),
-          ),
-        ],
       ),
       body: GestureDetector(
         // onTap: () => {
@@ -127,14 +125,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         // },
 
         child: Stack(children: [
-          Align(
-            alignment: Alignment.center,
-            child: Image.asset(
-              // Background image
-              'assets/images/logo.png',
-              height: 10 * 20,
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Image.asset(
+          //     // Background image
+          //     'assets/images/logo.png',
+          //     height: 10 * 20,
+          //   ),
+          // ),
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
@@ -155,9 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   controller: pageController,
                   itemCount: contentsinEgnlist.length,
                   itemBuilder: (context, i) {
-                    flutterTts.speak(englishToUrdu == true
-                        ? contentsinEgnlist[i].desc
-                        : contentsInUrdu[i].desc);
+                    flutterTts.speak(contentsinEgnlist[i].desc);
 
                     return GestureDetector(
                       onDoubleTap: () {
@@ -172,24 +168,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           _navigateToSettings();
                         }
                       },
-                      onTap: () => {flutterTts.stop, toggleLanguage()},
+                      // onTap: () => {flutterTts.stop, toggleLanguage()},
                       child: Padding(
                         padding:
                             const EdgeInsets.only(left: 24, right: 24, top: 40),
                         child: Column(
                           children: [
                             Image.asset(
-                              englishToUrdu == true
-                                  ? contentsinEgnlist[i].image
-                                  : contentsInUrdu[i].image,
+                              contentsinEgnlist[i].image,
                               fit: BoxFit.fill,
                               height: SizeConfig.blockV! * 20,
                               width: SizeConfig.blockH! * 50,
                             ),
+                            const SizedBox(height: 10),
                             Text(
-                              englishToUrdu == true
-                                  ? contentsinEgnlist[i].title
-                                  : contentsInUrdu[i].title,
+                              contentsinEgnlist[i].title,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontFamily: anotherFont,
@@ -198,11 +191,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   fontSize: 30,
                                   color: Colors.white.withOpacity(0.8)),
                             ),
-                            const SizedBox(height: 40),
+                            const SizedBox(height: 100),
                             Text(
-                              englishToUrdu == true
-                                  ? contentsinEgnlist[i].desc
-                                  : contentsInUrdu[i].desc,
+                              contentsinEgnlist[i].desc,
                               style: TextStyle(
                                 letterSpacing: 1.4,
                                 color: Colors.white.withOpacity(0.7),

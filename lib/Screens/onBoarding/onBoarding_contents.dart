@@ -16,32 +16,27 @@ class OnboardingContents {
 List<OnboardingContents> contentsinEgnlist = [
   OnboardingContents(
     title: "Instructions",
-    image: "assets/images/image3.png",
+    image: "assets/images/blind-man.png",
     desc:
         "This application is build for Blind people to help them in their daily life.Please slide left ",
   ),
   OnboardingContents(
     title: "Detect currency denomination",
-    image: "assets/images/image1.png",
+    image: "assets/images/money.png",
     desc:
         "You can detect denomination on an Pakistani currency note  Please Double tap to open and slide left to move next ",
   ),
   OnboardingContents(
-    title: "Detect object in your radius",
-    image: "assets/images/image2.png",
+    title: "Detect food items",
+    image: "assets/images/object.png",
     desc:
-        "You can detect objects by using phone camera,Please Double tap to open and slide left to move next",
+        "You can detect food items by using phone camera,Please Double tap to open and slide left to move next",
   ),
   OnboardingContents(
     title: "Obstacle Detection",
-    image: "assets/images/image3.png",
+    image: "assets/images/blind-man.png",
     desc:
         "The system will guide you to avoid obstacles in your path,Please Double tap to open and slide left to move next",
-  ),
-  OnboardingContents(
-    title: "Instructions",
-    image: "assets/images/image3.png",
-    desc: "",
   ),
 ];
 
