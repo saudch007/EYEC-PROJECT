@@ -1,22 +1,20 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:math';
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-class ObjectRecognition extends StatefulWidget {
+class CurrencyDenomination extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  const ObjectRecognition({required this.cameras, Key? key}) : super(key: key);
+  const CurrencyDenomination({required this.cameras, Key? key})
+      : super(key: key);
 
   @override
-  _ObjectRecognitionState createState() => _ObjectRecognitionState();
+  _CurrencyDenominationState createState() => _CurrencyDenominationState();
 }
 
-class _ObjectRecognitionState extends State<ObjectRecognition> {
+class _CurrencyDenominationState extends State<CurrencyDenomination> {
   late CameraController _cameraController;
   final FlutterTts flutterTts = FlutterTts();
   bool _isDetecting = false;
@@ -51,7 +49,7 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   void initCamera() {
     _cameraController =
         CameraController(widget.cameras[0], ResolutionPreset.medium);
-    cameraValue = _cameraController!.initialize().then((_) {
+    cameraValue = _cameraController.initialize().then((_) {
       if (!mounted) {
         return;
       }
@@ -69,8 +67,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   Future loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/objectModel.tflite',
-      labels: 'assets/objectLabels.txt',
+      model: 'assets/currenctModel.tflite',
+      labels: 'assets/currencyLabels.txt',
     );
   }
 
@@ -101,7 +99,7 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
       if (recognitionsList!.length > 1) {
         if (isNotoneInput == false) {
-          flutterTts.speak("PLease input only one object");
+          flutterTts.speak("PLease input only one Note");
         } else {
           await Future.delayed(const Duration(seconds: 3));
         }
@@ -129,13 +127,13 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
         _isDetected = false;
         await Future.delayed(const Duration(seconds: 3), () {
           _recognizedObject = "Others";
-          flutterTts.speak("PLease adjust the object  in front of camera");
+          flutterTts.speak("PLease adjust the note  in front of camera");
         });
       } else if (recognitionsList![0]['confidence'] > 0.55 &&
           recognitionsList![0]['confidence'] < 0.99) {
         _recognizedObject = "Others";
         await Future.delayed(const Duration(seconds: 3), () {
-          flutterTts.speak("PLease move the camera more nearer to the object");
+          flutterTts.speak("PLease move the camera more nearer to the note");
         });
       }
     } catch (e) {
@@ -199,7 +197,7 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   }
 
   Column afterDetection(String recognizedObject, double confidenceLevel) {
-    flutterTts.speak("This object is  " + recognizedObject);
+    flutterTts.speak("This note is  " + recognizedObject);
     return Column(
       children: [
         const SizedBox(height: 40),
@@ -213,6 +211,7 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
           height: 100,
         ),
         const SizedBox(height: 30),
+        noteImages(recognizedObject),
         Text(
           recognizedObject,
           style: TextStyle(
@@ -248,6 +247,11 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
     setState(() {});
     return Future.value(true);
   }
+}
+
+Image noteImages(String recognizedObject) {
+  return Image(
+      image: AssetImage("assets/images/notes/${recognizedObject}b.jpg"));
 }
 
 //multiply confidence by 100 to get full in to perecentage.

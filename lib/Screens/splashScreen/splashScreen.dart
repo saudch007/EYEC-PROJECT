@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
 
-import 'package:sample/Screens/homeScreen/homeScreen.dart';
 import 'package:sample/Screens/onBoarding/onboardingScreen.dart';
 
 class SplashScreenPage extends StatefulWidget {
