@@ -8,10 +8,14 @@ import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
 import 'package:sample/Screens/onBoarding/onboardingScreen.dart';
 import 'package:sample/Screens/settings/settings.dart';
 import 'package:sample/Screens/splashScreen/splashScreen.dart';
+import 'services/callService.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
+
+  final shakeService = ShakeToCallService(phoneNumber: '+923167566055');
+  shakeService.startService(); // Start the shake detection service
 
   runApp(MyApp(cameras: cameras));
 }
