@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-class obstacleDetection extends StatefulWidget {
+class CurrencyDenomination extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  const obstacleDetection({required this.cameras, Key? key}) : super(key: key);
+  const CurrencyDenomination({required this.cameras, Key? key})
+      : super(key: key);
 
   @override
-  _obstacleDetectionState createState() => _obstacleDetectionState();
+  _CurrencyDenominationState createState() => _CurrencyDenominationState();
 }
 
-class _obstacleDetectionState extends State<obstacleDetection> {
+class _CurrencyDenominationState extends State<CurrencyDenomination> {
   late CameraController _cameraController;
   final FlutterTts flutterTts = FlutterTts();
   bool _isDetecting = false;
@@ -21,6 +22,7 @@ class _obstacleDetectionState extends State<obstacleDetection> {
   late Future<void> cameraValue;
   String _recognizedObject = 'NO';
 
+  List<dynamic>? recognitionsList;
   double _confidenceLevel = 0.0;
 
   @override
@@ -52,7 +54,7 @@ class _obstacleDetectionState extends State<obstacleDetection> {
         return;
       }
       setState(() {
-        _cameraController.startImageStream((CameraImage image) {
+        _cameraController!.startImageStream((CameraImage image) {
           if (_isDetecting || _cameraController == null) return;
           _isDetecting = true;
 
@@ -65,10 +67,8 @@ class _obstacleDetectionState extends State<obstacleDetection> {
   Future loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/ssd_mobilenet.tflite',
-      labels: 'assets/ssd_mobilenet.txt',
-      isAsset: true,
-      useGpuDelegate: false,
+      model: 'assets/currenctModel.tflite',
+      labels: 'assets/currencyLabels.txt',
     );
   }
 
@@ -90,21 +90,16 @@ class _obstacleDetectionState extends State<obstacleDetection> {
     }
 
     try {
-      List<dynamic>? recognitionsList = await Tflite.detectObjectOnFrame(
+      wait(53);
+      recognitionsList = await Tflite.runModelOnFrame(
         bytesList: image.planes.map((plane) => plane.bytes).toList(),
         imageHeight: image.height,
         imageWidth: image.width,
-        asynch: true,
-        model: "SSDMobileNet",
-        imageMean: 127.5,
-        imageStd: 127.5,
-        threshold: 0.4, // defaults to 0.1
-        numResultsPerClass: 10, // defaults to 5
       );
 
       if (recognitionsList!.length > 1) {
         if (isNotoneInput == false) {
-          flutterTts.speak("PLease input only one object");
+          flutterTts.speak("PLease input only one Note");
         } else {
           await Future.delayed(const Duration(seconds: 3));
         }
@@ -112,37 +107,37 @@ class _obstacleDetectionState extends State<obstacleDetection> {
       }
 
       setState(() {
-        _confidenceLevel = recognitionsList[0]['confidence'];
-        _recognizedObject = recognitionsList[0]['label'];
+        _confidenceLevel = recognitionsList![0]['confidence'];
+        _recognizedObject = recognitionsList![0]['label'];
       });
-      double getConfidence = recognitionsList[0]['confidence'] * 100;
+      double getConfidence = recognitionsList![0]['confidence'] * 100;
 
       setState(() {
         _confidenceLevel = getConfidence;
       });
 
-      if (recognitionsList[0]['confidence'] > 0.99) {
+      if (recognitionsList![0]['confidence'] > 0.99) {
         setState(() {
-          _recognizedObject = recognitionsList[0]['label'];
-          _confidenceLevel = recognitionsList[0]['confidence'];
+          _recognizedObject = recognitionsList![0]['label'];
+          _confidenceLevel = recognitionsList![0]['confidence'];
           _isDetected = true;
           _cameraController.stopImageStream();
         });
-      } else if (recognitionsList[0]['confidence'] < 0.55) {
+      } else if (recognitionsList![0]['confidence'] < 0.55) {
         _isDetected = false;
-        _recognizedObject = "others";
         await Future.delayed(const Duration(seconds: 3), () {
-          flutterTts.speak("PLease adjust the Note  in front of camera");
+          _recognizedObject = "Others";
+          flutterTts.speak("PLease adjust the note  in front of camera");
         });
-      } else if (recognitionsList[0]['confidence'] > 0.55 &&
-          recognitionsList[0]['confidence'] < 0.99) {
-        _recognizedObject = "Move nearer";
+      } else if (recognitionsList![0]['confidence'] > 0.55 &&
+          recognitionsList![0]['confidence'] < 0.99) {
+        _recognizedObject = "Others";
         await Future.delayed(const Duration(seconds: 3), () {
-          flutterTts.speak("PLease move the camera more nearer to the Note");
+          flutterTts.speak("PLease move the camera more nearer to the note");
         });
       }
     } catch (e) {
-      print("Error running detection model: $e");
+      //   print("Error running detection model: $e");
     } finally {
       _isDetecting = false;
     }
@@ -177,7 +172,6 @@ class _obstacleDetectionState extends State<obstacleDetection> {
         child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text("Currency detection"),
               backgroundColor: Colors.black,
             ),
             body: _isDetected == false
@@ -186,12 +180,15 @@ class _obstacleDetectionState extends State<obstacleDetection> {
                     onDoubleTap: () {
                       _confidenceLevel = 0.0;
                       _recognizedObject = "";
+
                       _cameraController.startImageStream((CameraImage image) {
                         if (_isDetecting || _cameraController == null) return;
                         _isDetecting = true;
 
                         runModelOnFrame(image);
                       });
+                      _isDetected = false;
+                      setState(() {});
                     },
                     child:
                         afterDetection(_recognizedObject, _confidenceLevel))),
@@ -200,38 +197,29 @@ class _obstacleDetectionState extends State<obstacleDetection> {
   }
 
   Column afterDetection(String recognizedObject, double confidenceLevel) {
-    flutterTts.speak("This note is of " + recognizedObject + "rupees");
+    flutterTts.speak("This note is  " + recognizedObject);
     return Column(
       children: [
-        SizedBox(height: 100),
-        Center(
+        const SizedBox(height: 40),
+        const Center(
             child: Text(
           "DETECTED",
           style: TextStyle(
-              fontSize: 50, color: Colors.red, fontWeight: FontWeight.bold),
+              fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
         )),
-        SizedBox(
+        const SizedBox(
           height: 100,
         ),
-        NoteImages(recognizedObject),
-        SizedBox(height: 50),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
+        noteImages(recognizedObject),
         Text(
           recognizedObject,
           style: TextStyle(
-              fontSize: 44, color: Colors.green, fontWeight: FontWeight.bold),
+              fontSize: 50, color: Colors.green, fontWeight: FontWeight.bold),
         ),
         Text(confidenceLevel.toString()),
       ],
     );
-  }
-
-  Image NoteImages(String recognizedObject) {
-    String imagePath;
-
-    return Image(
-        image:
-            AssetImage("assets/images/notes/$recognizedObject" + "1000.jpg"));
   }
 
   Column Detecting_Camera_Widget() {
@@ -239,14 +227,14 @@ class _obstacleDetectionState extends State<obstacleDetection> {
       children: [
         _isDetected == false
             ? CameraPreview(_cameraController!)
-            : const Center(child: Text("Detected")),
+            : Center(child: Text("Detected")),
         Text(
-          _recognizedObject,
-          style: TextStyle(fontSize: 20, color: Colors.green),
+          '$_recognizedObject',
+          style: TextStyle(fontSize: 40, color: Colors.green),
         ),
         Text(
-          _confidenceLevel.toString(),
-          style: const TextStyle(fontSize: 14, color: Colors.green),
+          '$_confidenceLevel',
+          style: TextStyle(fontSize: 15, color: Colors.green),
         ),
       ],
     );
@@ -259,6 +247,11 @@ class _obstacleDetectionState extends State<obstacleDetection> {
     setState(() {});
     return Future.value(true);
   }
+}
+
+Image noteImages(String recognizedObject) {
+  return Image(
+      image: AssetImage("assets/images/notes/${recognizedObject}b.jpg"));
 }
 
 //multiply confidence by 100 to get full in to perecentage.

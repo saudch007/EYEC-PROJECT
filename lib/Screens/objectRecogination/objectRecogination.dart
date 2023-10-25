@@ -24,9 +24,8 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   late Future<void> cameraValue;
   String _recognizedObject = 'NO';
 
+  List<dynamic>? recognitionsList;
   double _confidenceLevel = 0.0;
-  bool _timerActive = false;
-  Timer? _timer;
 
   @override
   void initState() {
@@ -70,13 +69,15 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   Future loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/object.tflite',
-      labels: 'assets/lobject.txt',
+      model: 'assets/objectModel.tflite',
+      labels: 'assets/objectLabels.txt',
     );
   }
 
+  bool isInputBlack = false;
+  bool isNotoneInput = false;
+
   Future runModelOnFrame(CameraImage image) async {
-    bool isInputBlack = false;
     double averageBrightness = calculateAverageBrightness(image);
 
     // Define a threshold for black detection
@@ -92,46 +93,53 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
 
     try {
       wait(53);
-      List<dynamic>? recognitionsList = await Tflite.detectObjectOnFrame(
+      recognitionsList = await Tflite.runModelOnFrame(
         bytesList: image.planes.map((plane) => plane.bytes).toList(),
         imageHeight: image.height,
         imageWidth: image.width,
-        imageMean: 127.6,
-        imageStd: 127.5,
-        rotation: 90,
-        numResultsPerClass: 1,
-        threshold: 0.4,
-        asynch: true,
       );
 
       if (recognitionsList!.length > 1) {
-        flutterTts.speak("PLease input only one note");
+        if (isNotoneInput == false) {
+          flutterTts.speak("PLease input only one object");
+        } else {
+          await Future.delayed(const Duration(seconds: 3));
+        }
+        isNotoneInput = true;
       }
 
       setState(() {
-        _confidenceLevel = recognitionsList[0]['confidence'];
-        _recognizedObject = recognitionsList[0]['label'];
+        _confidenceLevel = recognitionsList![0]['confidence'];
+        _recognizedObject = recognitionsList![0]['label'];
       });
-      double getConfidence = recognitionsList[0]['confidence'] * 10000;
+      double getConfidence = recognitionsList![0]['confidence'] * 100;
 
       setState(() {
         _confidenceLevel = getConfidence;
       });
 
-      if (recognitionsList[0]['confidence'] > 0.9999) {
+      if (recognitionsList![0]['confidence'] > 0.99) {
         setState(() {
-          _recognizedObject = recognitionsList[0]['label'];
-          _confidenceLevel = recognitionsList[0]['confidence'];
+          _recognizedObject = recognitionsList![0]['label'];
+          _confidenceLevel = recognitionsList![0]['confidence'];
           _isDetected = true;
           _cameraController.stopImageStream();
         });
-      } else if (recognitionsList[0]['confidence'] < 0.915555) {
-        wait(5).then((value) =>
-            {flutterTts.speak("PLease adjust the note in front of camera")});
+      } else if (recognitionsList![0]['confidence'] < 0.55) {
+        _isDetected = false;
+        await Future.delayed(const Duration(seconds: 3), () {
+          _recognizedObject = "Others";
+          flutterTts.speak("PLease adjust the object  in front of camera");
+        });
+      } else if (recognitionsList![0]['confidence'] > 0.55 &&
+          recognitionsList![0]['confidence'] < 0.99) {
+        _recognizedObject = "Others";
+        await Future.delayed(const Duration(seconds: 3), () {
+          flutterTts.speak("PLease move the camera more nearer to the object");
+        });
       }
-      ;
     } catch (e) {
-      print("Error running detection model: $e");
+      //   print("Error running detection model: $e");
     } finally {
       _isDetecting = false;
     }
@@ -164,14 +172,26 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
           return _onBackPressed();
         },
         child: Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text("Currency detection"),
               backgroundColor: Colors.black,
             ),
             body: _isDetected == false
                 ? Detecting_Camera_Widget()
                 : GestureDetector(
-                    onDoubleTap: () {},
+                    onDoubleTap: () {
+                      _confidenceLevel = 0.0;
+                      _recognizedObject = "";
+
+                      _cameraController.startImageStream((CameraImage image) {
+                        if (_isDetecting || _cameraController == null) return;
+                        _isDetecting = true;
+
+                        runModelOnFrame(image);
+                      });
+                      _isDetected = false;
+                      setState(() {});
+                    },
                     child:
                         afterDetection(_recognizedObject, _confidenceLevel))),
       ),
@@ -179,45 +199,28 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
   }
 
   Column afterDetection(String recognizedObject, double confidenceLevel) {
-    flutterTts.speak("This note is of " + recognizedObject + "rupees");
+    flutterTts.speak("This object is  " + recognizedObject);
     return Column(
       children: [
-        SizedBox(height: 100),
-        Center(
+        const SizedBox(height: 40),
+        const Center(
             child: Text(
           "DETECTED",
           style: TextStyle(
-              fontSize: 50, color: Colors.red, fontWeight: FontWeight.bold),
+              fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
         )),
-        SizedBox(
+        const SizedBox(
           height: 100,
         ),
-        NoteImages(recognizedObject),
-        SizedBox(height: 50),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         Text(
           recognizedObject,
           style: TextStyle(
-              fontSize: 44, color: Colors.black, fontWeight: FontWeight.bold),
+              fontSize: 50, color: Colors.green, fontWeight: FontWeight.bold),
         ),
         Text(confidenceLevel.toString()),
       ],
     );
-  }
-
-  Image NoteImages(String recognizedObject) {
-    String imagePath;
-
-    switch (recognizedObject) {
-      case '10':
-        imagePath = "10b.jpg";
-
-        break;
-      default:
-    }
-
-    return Image(
-        image: AssetImage("assets/images/notes/$recognizedObject" + "b.jpg"));
   }
 
   Column Detecting_Camera_Widget() {
@@ -228,11 +231,11 @@ class _ObjectRecognitionState extends State<ObjectRecognition> {
             : Center(child: Text("Detected")),
         Text(
           '$_recognizedObject',
-          style: TextStyle(fontSize: 40),
+          style: TextStyle(fontSize: 40, color: Colors.green),
         ),
         Text(
           '$_confidenceLevel',
-          style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 18, 0, 0)),
+          style: TextStyle(fontSize: 15, color: Colors.green),
         ),
       ],
     );
