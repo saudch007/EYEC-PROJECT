@@ -1,72 +1,74 @@
-// import 'package:camera/camera.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:sample/Screens/currencyDenomination/currencyDenominations.dart';
+// NOT YET PASSED
 
-// void main() {
-//   group('CurrencyDenominationWidgetTests', () {
-//     late List<CameraDescription> cameras;
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sample/Screens/currencyDenomination/currencyDenominations.dart';
 
-//     setUp(() {
-//       cameras = [
-//         CameraDescription(
-//           name: "0",
-//           lensDirection: CameraLensDirection.front,
-//           sensorOrientation: 90,
-//         ),
-//       ];
-//     });
+void main() {
+  group('CurrencyDenominationWidgetTests', () {
+    late List<CameraDescription> cameras;
 
-//     testWidgets('Valid note detection', (WidgetTester tester) async {
-//       // Build our widget and trigger a frame.
-//       await tester.pumpWidget(
-//         MaterialApp(
-//           home: CurrencyDenomination(cameras: cameras),
-//         ),
-//       );
+    setUp(() {
+      cameras = [
+        CameraDescription(
+          name: "0",
+          lensDirection: CameraLensDirection.front,
+          sensorOrientation: 90,
+        ),
+      ];
+    });
 
-//       // Wait for all asynchronous operations to complete.
-//       await tester.pumpAndSettle();
+    testWidgets('Valid note detection', (WidgetTester tester) async {
+      // Build our widget and trigger a frame.
+      await tester.pumpWidget(
+        MaterialApp(
+          home: CurrencyDenomination(cameras: cameras),
+        ),
+      );
 
-//       // Ensure that the camera stream is initially running
-//       expect(find.byType(CameraPreview), findsOneWidget);
+      // Wait for all asynchronous operations to complete.
+      await tester.pumpAndSettle();
 
-//       // Simulate a valid note detection with high confidence
-//       tester
-//           .widget<CurrencyDenomination>(
-//             find.byType(CurrencyDenomination),
-//           )
-//           .currencyDenominationState
-//           .recognitionsList = [
-//         {'label': 'ValidNote', 'confidence': 0.99}
-//       ];
+      // Ensure that the camera stream is initially running
+      expect(find.byType(CameraPreview), findsOneWidget);
 
-//       // Wait for all asynchronous operations to complete.
-//       await tester.pumpAndSettle();
+      // Simulate a valid note detection with high confidence
+      tester
+          .widget<CurrencyDenomination>(
+            find.byType(CurrencyDenomination),
+          )
+          .currencyDenominationState
+          .recognitionsList = [
+        {'label': 'ValidNote', 'confidence': 0.99}
+      ];
 
-//       // Ensure that the camera stream is stopped
-//       expect(find.byType(CameraPreview), findsOneWidget);
+      // Wait for all asynchronous operations to complete.
+      await tester.pumpAndSettle();
 
-//       // Ensure that the appropriate UI elements are displayed after detection
-//       //expect(find.text('DETECTED'), findsOneWidget);
+      // Ensure that the camera stream is stopped
+      expect(find.byType(CameraPreview), findsOneWidget);
 
-//       expect(find.text('99.0'), findsOneWidget);
+      // Ensure that the appropriate UI elements are displayed after detection
+      //expect(find.text('DETECTED'), findsOneWidget);
 
-//       // If "DETECTED" is conditionally added, you might need to adjust the find logic
-//       if (isDetectedInState(tester)) {
-//         expect(find.text('DETECTED'), findsOneWidget);
-//       }
-//     });
+      expect(find.text('99.0'), findsOneWidget);
 
-//     tearDown(() {
-//       // Clean up any resources or reset global state
-//     });
-//   });
-// }
+      // If "DETECTED" is conditionally added, you might need to adjust the find logic
+      if (isDetectedInState(tester)) {
+        expect(find.text('DETECTED'), findsOneWidget);
+      }
+    });
 
-// bool isDetectedInState(WidgetTester tester) {
-//   final widget = tester.widget<CurrencyDenomination>(
-//     find.byType(CurrencyDenomination),
-//   );
-//   return widget.currencyDenominationState.isDetected;
-// }
+    tearDown(() {
+      // Clean up any resources or reset global state
+    });
+  });
+}
+
+bool isDetectedInState(WidgetTester tester) {
+  final widget = tester.widget<CurrencyDenomination>(
+    find.byType(CurrencyDenomination),
+  );
+  return widget.currencyDenominationState.isDetected;
+}
