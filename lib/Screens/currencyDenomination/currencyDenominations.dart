@@ -12,6 +12,9 @@ class CurrencyDenomination extends StatefulWidget {
 
   @override
   _CurrencyDenominationState createState() => _CurrencyDenominationState();
+
+  _CurrencyDenominationState get currencyDenominationState =>
+      _CurrencyDenominationState();
 }
 
 class _CurrencyDenominationState extends State<CurrencyDenomination> {
@@ -19,11 +22,13 @@ class _CurrencyDenominationState extends State<CurrencyDenomination> {
   final FlutterTts flutterTts = FlutterTts();
   bool _isDetecting = false;
   bool _isDetected = false;
+  bool get isDetected => _isDetected; // for testing
+
   late Future<void> cameraValue;
+  double _confidenceLevel = 0.0;
   String _recognizedObject = 'NO';
 
   List<dynamic>? recognitionsList;
-  double _confidenceLevel = 0.0;
 
   @override
   void initState() {
@@ -38,7 +43,11 @@ class _CurrencyDenominationState extends State<CurrencyDenomination> {
   @override
   void dispose() {
     Tflite.close();
-    _cameraController.stopImageStream();
+
+    if (_cameraController.value.isInitialized) {
+      _cameraController.stopImageStream();
+    }
+    // _cameraController.stopImageStream();
     _cameraController.dispose();
 
     _isDetecting = false;

@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sample/Screens/currencyDenomination/currencyDenominationScreen.dart';
 import 'package:sample/Screens/currencyDenomination/currencyDenominations.dart';
 
 import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
