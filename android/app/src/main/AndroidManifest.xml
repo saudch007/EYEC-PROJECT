@@ -2,12 +2,15 @@
     package="com.example.sample">
 
     <uses-permission android:name="android.hardware.sensor.proximity"/>
-<uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
    <application
         android:label="sample"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

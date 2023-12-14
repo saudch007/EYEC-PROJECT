@@ -7,21 +7,22 @@ import 'package:sample/Screens/objectRecogination/objectRecogination.dart';
 import 'package:sample/Screens/onBoarding/onboardingScreen.dart';
 import 'package:sample/Screens/settings/settings.dart';
 import 'package:sample/Screens/splashScreen/splashScreen.dart';
+import 'Screens/text_recognizer/text_recognizer.dart';
 import 'services/callService.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
 
-  final shakeService = ShakeToCallService(phoneNumber: '+923167566055');
-  shakeService.startService(); // Start the shake detection service
+  // final shakeService = ShakeToCallService(phoneNumber: '+923167566055');
+  // shakeService.startService(); // Start the shake detection service
 
   runApp(MyApp(cameras: cameras));
 }
 
 class MyApp extends StatelessWidget {
   final MethodChannel platform =
-      MethodChannel('your.package.name/volume_button');
+      const MethodChannel('your.package.name/volume_button');
 
   MyApp({required this.cameras, Key? key}) : super(key: key);
   final List<CameraDescription> cameras;
@@ -32,7 +33,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreenPage(),
       routes: {
-        '/onboarding': (context) => OnboardingScreen(),
+        '/textRecognizer': (context) => MyAppFlaw(cameras: cameras),
+        '/onboarding': (context) => const OnboardingScreen(),
+
         //  '/obstacleDetection':
         '/currencyDenomination': (context) =>
             CurrencyDenomination(cameras: cameras),

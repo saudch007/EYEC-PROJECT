@@ -43,6 +43,14 @@ dependencies:
   proximity_sensor: ^1.0.4
   shake: ^2.2.0
   url_launcher: ^6.2.0
+  flutter_phone_direct_caller: ^2.1.1
+  volume_watcher: ^2.0.1
+  flutter_android_volume_keydown: ^1.0.0
+  flutter_tesseract_ocr: ^0.4.24
+  google_mlkit_text_recognition: ^0.11.0
+  lottie: ^2.7.0
+  perfect_volume_control: ^1.0.5
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -70,10 +78,12 @@ flutter:
   assets:
     - assets/images/
     - assets/images/notes/
+    - assets/animations/
     - assets/currenctModel.tflite
     - assets/objectModel.tflite
     - assets/currencyLabels.txt
     - assets/objectLabels.txt
+    - assets/controll_sounds/
   fonts:
     - family: Mulish
       fonts:
